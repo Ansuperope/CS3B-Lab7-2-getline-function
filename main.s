@@ -33,6 +33,7 @@
 _start: 
 	// SYSTEM CALLS CONSTANTS
 	.EQU SYS_openat,	56		// openat()
+	.EQU SYS_close,		67		// close()
 	.EQU SYS_exit,		93		// exit() supervisor call code 
     .EQU AT_FDCWD,		-100	// file descriptor
 
@@ -76,11 +77,25 @@ _start:
 	// RETURN:
 	//	X0: file descriptor
 	// -----------------------------------------------------------------
+	MOV X0, X19			// file descriptor
 	LDR X1, =szBuffer	// buffer
 	MOV X2, MAX_READ	// max length
 	BL  getline			// go to function
+
 	// -----------------------------------------------------------------
-	// TERMINATE PROGRAM
+	// 3. CLOSE FILE
+	// PARAMETERS:
+	//	X0: to close
+	//	X1: file descriptor
+	// RETURN:
+	//	X0: file descriptor
+	// -----------------------------------------------------------------
+	LDR X0, =szReadFile		// file to close
+	LDR X0, [X0]			// file descriptor variable value
+	MOV X8, SYS_close
+
+	// -----------------------------------------------------------------
+	// 4. TERMINATE PROGRAM
 	// -----------------------------------------------------------------
 	MOV X0, #0			// set return code to 0, all good 
 	MOV X8, #SYS_exit	// set exit() supervisor call code 
