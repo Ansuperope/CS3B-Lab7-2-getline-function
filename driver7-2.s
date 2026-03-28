@@ -6,9 +6,6 @@
 // 	PURPOSE:
 // Open a file and read each character one by one
 // ---------------------------------------------------------------------
-//	VARAIBLES:
-// LOREM 
-// ---------------------------------------------------------------------
 // 	PSUEDOCODE:
 // 1. Get file descriptor
 //	a. Use openat to open file and get descriptor
