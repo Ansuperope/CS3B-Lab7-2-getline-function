@@ -38,7 +38,11 @@ jobs:
             arm64-dev \
             make
 
-      # 6. Run program and check output
+      # 6. Give permission
+      - name: Give File Permission
+        run: chmod +x driver7-2
+
+      # 7. Run program and check output
       - name: Run program
         run: |
           docker run --rm --platform=linux/arm64 \
