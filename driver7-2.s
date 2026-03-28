@@ -92,7 +92,7 @@ _start:
 	// RETURN:
 	//	X0: file descriptor
 	// -----------------------------------------------------------------
-	LDR X0, X19			// file descriptor variable value
+	MOV X0, X19			// file descriptor variable value
 	MOV X8, SYS_close
 
 	// -----------------------------------------------------------------
