@@ -28,8 +28,10 @@
 
 _start: 
 	// SYSTEM CALLS CONSTANTS
+	.EQU STDOUT,    	1
 	.EQU SYS_openat,	56		// openat()
 	.EQU SYS_close,		57		// close()
+	.EQU SYS_write, 	64      // write()
 	.EQU SYS_exit,		93		// exit() supervisor call code 
     .EQU AT_FDCWD,		-100	// file descriptor
 
@@ -81,6 +83,21 @@ _start:
 	LDR X1, =szBuffer	// buffer
 	MOV X2, MAX_READ	// max length
 	BL  getline			// go to function
+
+	// SAVE NUMBER OF CHARACTERS READ
+	MOV X4, X0
+	
+    // -----------------------------------------------------------------
+    // OUTPUT CHARACTER
+    //  X0: stdout
+    //  X1 = X4: character to output
+    //  X2: length of string
+    // -----------------------------------------------------------------
+    MOV X0, STDOUT
+    MOV X1, X0
+    MOV X2, #1
+    MOV X8, SYS_write
+    SVC 0
 
 	// -----------------------------------------------------------------
 	// 3. CLOSE FILE

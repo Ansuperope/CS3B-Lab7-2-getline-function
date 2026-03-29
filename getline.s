@@ -33,9 +33,9 @@
 getline:
     // CONSTANT SYSTEM CALLS
     .EQU STDOUT,    1
-    .EQU SYS_write, 64          // write()
-    .EQU SYS_read,  63          // read()
-    .EQU SYS_exit,		93		// exit() supervisor call code
+    .EQU SYS_write, 64      // write()
+    .EQU SYS_read,  63      // read()
+    .EQU SYS_exit,	93		// exit() supervisor call code
 
     .text
     // -----------------------------------------------------------------
@@ -94,6 +94,9 @@ readFile:
     // -----------------------------------------------------------------
     STRB W7, [X4, X6]           // W7 = string[counter]
     
+    // INCREMENT COUNTER
+    ADD X6, X6, #1
+
     // CHECK IF CHARACTER IS NULL
     CMP  W7, #'\n'
     B.EQ changeNull
@@ -105,17 +108,14 @@ readFile:
     // -----------------------------------------------------------------
     // OUTPUT CHARACTER
     //  X0: stdout
-    //  X1 = X7: character to output
+    //  X1 = X4: character to output
     //  X2: length of string
     // -----------------------------------------------------------------
     MOV X0, STDOUT
-    MOV X1, SP
+    MOV X1, X4
     MOV X2, #1
     MOV X8, SYS_write
     SVC 0
-
-    // INCREMENT COUNTER
-    ADD X6, X6, #1
 
     // LOOP AGAIN
     B readFile
@@ -138,8 +138,11 @@ changeNull:
 
     // -----------------------------------------------------------------
     // RETURN TO MAIN
+    //  X6: number of characters read
     // -----------------------------------------------------------------
 returnMain:
+    MOV X0, X6
+
     RET
 
 .end
