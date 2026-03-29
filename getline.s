@@ -33,8 +33,9 @@
 getline:
     // CONSTANT SYSTEM CALLS
     .EQU STDOUT,    1
-    .EQU SYS_write, 64  // write()
-    .EQU SYS_read,  63  // read()
+    .EQU SYS_write, 64          // write()
+    .EQU SYS_read,  63          // read()
+    .EQU SYS_exit,		93		// exit() supervisor call code
 
     .text
     // -----------------------------------------------------------------
@@ -77,6 +78,14 @@ readFile:
     MOV X8, SYS_read    // read()
     SVC 0               // execute
 
+    // CHECK IF NO MORE TO READ
+    CMP  X0, #0
+    B.EQ returnMain
+
+    // ERROR
+    CMP  X0, #0
+    B.LT error
+
     // -----------------------------------------------------------------
     // GET CHARACTER
     //  X4:      character buffer
@@ -96,11 +105,11 @@ readFile:
     // -----------------------------------------------------------------
     // OUTPUT CHARACTER
     //  X0: stdout
-    //  X1 = X4: character to output
+    //  X1 = X7: character to output
     //  X2: length of string
     // -----------------------------------------------------------------
     MOV X0, STDOUT
-    MOV X1, X4
+    MOV X1, SP
     MOV X2, #1
     MOV X8, SYS_write
     SVC 0
@@ -110,6 +119,15 @@ readFile:
 
     // LOOP AGAIN
     B readFile
+
+    // -----------------------------------------------------------------
+    // ERROR
+    //  X7 / W7: current character
+    // -----------------------------------------------------------------
+error:
+    MOV X0, #0			// set return code to 0, all good 
+	MOV X8, #SYS_exit	// set exit() supervisor call code 
+	SVC 0				// call Linux to exit 
 
     // -----------------------------------------------------------------
     // CHANGE NULL TO '\0'
