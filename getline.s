@@ -60,8 +60,8 @@ getline:
     // -----------------------------------------------------------------
 readFile:
     // CHECK IF REACHED MAX READ LENGTH
-    CMP  X6, X5
-    B.LE returnMain
+    CMP  X6, X5         // counter > max lenght
+    B.GT returnMain
 
     // -----------------------------------------------------------------
     // READ A CHARACTER
