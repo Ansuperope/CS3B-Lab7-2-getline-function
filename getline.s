@@ -108,6 +108,9 @@ readFile:
     // INCREMENT COUNTER
     ADD X6, X6, #1
 
+    // LOOP AGAIN
+    B readFile
+
     // -----------------------------------------------------------------
     // CHANGE NULL TO '\0'
     //  X7 / W7: current character
